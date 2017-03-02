@@ -26,16 +26,54 @@ exports.initialize = function(pathsObj) {
 // modularize your code. Keep it clean!
 
 exports.readListOfUrls = function(callback) {
+  fs.readFile(this.paths.list, 'utf8', function(err, data) {
+    if (err) { throw err; }
+    callback(data.split('\n'));
+  });
 };
 
 exports.isUrlInList = function(url, callback) {
+  fs.readFile(this.paths.list, 'utf8', function(err, data) {
+    if (err) { throw err; }
+    urlList = data.split('\n');
+    var isThere = false;
+    for (var i = 0; i < urlList.length; i++) {
+      if (urlList[i] === url) {
+        isThere = true;
+      }
+    }
+    callback(isThere);
+  });
+
 };
 
 exports.addUrlToList = function(url, callback) {
+  fs.appendFile(this.paths.list, url, function(err) {
+    if (err) { throw err; }
+  });
+  fs.readFile(this.paths.list, 'utf8', function(err, data) {
+    if (err) { throw err; }
+    callback(data.split('\n'));
+  });
 };
 
 exports.isUrlArchived = function(url, callback) {
+  var doesExist = false;
+  fs.readdir(this.paths.archivedSites, function(err, files) {
+    for (var i = 0; i < files.length; i++) {
+      if (files[i] === url) {
+        doesExist = true;
+      }
+    }
+    callback(doesExist);
+  });
+  return doesExist;
 };
 
 exports.downloadUrls = function(urls) {
+  for (var i = 0; i < urls.length; i++) {
+    fs.writeFile(this.paths.archivedSites + '/' + urls[i], 'Hey there!', function(err) {
+      if (err) { throw err; }
+    });
+  }
 };
