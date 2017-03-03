@@ -48,7 +48,7 @@ exports.isUrlInList = function(url, callback) {
 };
 
 exports.addUrlToList = function(url, callback) {
-  fs.appendFile(this.paths.list, url, function(err) {
+  fs.appendFile(this.paths.list, url + '\n', function(err) {
     if (err) { throw err; }
   });
   fs.readFile(this.paths.list, 'utf8', function(err, data) {
@@ -58,8 +58,8 @@ exports.addUrlToList = function(url, callback) {
 };
 
 exports.isUrlArchived = function(url, callback) {
-  var doesExist = false;
   fs.readdir(this.paths.archivedSites, function(err, files) {
+    var doesExist = false;
     for (var i = 0; i < files.length; i++) {
       if (files[i] === url) {
         doesExist = true;
@@ -67,7 +67,6 @@ exports.isUrlArchived = function(url, callback) {
     }
     callback(doesExist);
   });
-  return doesExist;
 };
 
 exports.downloadUrls = function(urls) {
